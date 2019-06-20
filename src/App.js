@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { Segment, Tab } from 'semantic-ui-react'
+import { Container, Tab } from 'semantic-ui-react'
 import 'semantic-ui-css/semantic.min.css';
 import './App.css';
 import Restreamer from "./components/Restreamer";
@@ -18,9 +18,9 @@ class App extends Component {
     ];
 
     return (
-        <Segment basic padded>
+        <Container text>
           <Tab menu={{ secondary: true, pointing: true, color: "blue"}} panes={panes} />
-        </Segment>
+        </Container>
     );
   }
 }

@@ -1,11 +1,13 @@
 import React, {Component} from 'react'
-import { Divider, Segment, Label, Input, Button } from 'semantic-ui-react'
+import { Divider, Segment, Label, Input, Button, Select } from 'semantic-ui-react'
 import {getData, putData} from "../shared/tools";
 
 
 class Restreamer extends Component {
 
     state = {
+        name: "",
+        language: "heb",
         restream: {}
     };
 
@@ -26,13 +28,25 @@ class Restreamer extends Component {
 
     render() {
 
-        const {} = this.state;
+        const {name,language} = this.state;
 
+        const options = [
+            { key: 'heb', text: 'Hebrew', value: 'heb' },
+            { key: 'rus', text: 'Russian', value: 'rus' },
+            { key: 'eng', text: 'English', value: 'eng' },
+        ]
 
         return(
-            <Segment textAlign='center' color='brown'>
-                <Label attached='top' size='big' >
-
+            <Segment padded textAlign='center' color='brown'>
+                <Label  size='big' >
+                    <Input type='text' placeholder='Type name...'
+                           value={name} action
+                           onChange={e => this.setState({name: e.target.value})}>
+                        <input />
+                        <Select compact options={options} value={language}
+                                onChange={(e, {value}) => this.setState({language: value})} />
+                        <Button type='submit' color='green' onClick={this.addRestream}>Add</Button>
+                    </Input>
                 </Label>
                 <Divider />
 
