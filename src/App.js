@@ -1,26 +1,28 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, {Component} from 'react';
+import { Segment, Tab } from 'semantic-ui-react'
+import 'semantic-ui-css/semantic.min.css';
 import './App.css';
+import Restreamer from "./components/Restreamer";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class App extends Component {
+
+  state = {};
+
+  render() {
+
+    const panes = [
+      { menuItem: { key: 'coder', icon: 'cog', content: 'ReStream' },
+        render: () => <Tab.Pane attached={false} >
+          <Restreamer />
+        </Tab.Pane> },
+    ];
+
+    return (
+        <Segment basic padded>
+          <Tab menu={{ secondary: true, pointing: true, color: "blue"}} panes={panes} />
+        </Segment>
+    );
+  }
 }
 
 export default App;
