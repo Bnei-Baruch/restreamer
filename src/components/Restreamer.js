@@ -45,7 +45,7 @@ class Restreamer extends Component {
         ];
 
         let streams = db.restream.map((stream,i) => {
-            return (<Streams key={i} index={i} db={db} saveData={this.saveData} />);
+            return (<Streams key={i} index={i} {...this.state} saveData={this.saveData} />);
         });
 
         return(

@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import { Message } from 'semantic-ui-react'
+import { Message, Table, Checkbox } from 'semantic-ui-react'
 
 class Streams extends Component {
 
@@ -20,11 +20,14 @@ class Streams extends Component {
 
     render() {
 
+        const {index} = this.props;
+        const {name,language} = this.props.db.restream[index];
         const {url} = this.state;
 
-        return(
-            <Message info onDismiss={this.removeStream}>
-                {url}
+        return (
+            <Message onDismiss={this.removeStream}>
+                <Checkbox toggle />
+                {name}
             </Message>
         );
     }
