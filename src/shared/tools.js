@@ -13,15 +13,15 @@ export const getPercent = (total,current) => {
     return percent;
 };
 
-export const getData = (path, cb) => fetch(`${RS_STATE}/${path}`)
+export const getData = (cb) => fetch(`${RS_STATE}`)
     .then((response) => {
         if (response.ok) {
             return response.json().then(data => cb(data));
         }
     })
-    .catch(ex => console.log(`get ${path}`, ex));
+    .catch(ex => console.log(`getData`, ex));
 
-export const putData = (path, data, cb) => fetch(`${RS_STATE}/${path}`, {
+export const putData = (data, cb) => fetch(`${RS_STATE}`, {
     method: 'PUT',
     headers: {'Content-Type': 'application/json'},
     body:  JSON.stringify(data)
@@ -33,7 +33,7 @@ export const putData = (path, data, cb) => fetch(`${RS_STATE}/${path}`, {
     })
     .catch(ex => console.log("Put Data error:", ex));
 
-export const rstrExec = (data, cb) => fetch(`${RS_BACKEND}/restream/exec`, {
+export const rstrExec = (data, cb) => fetch(`${RS_BACKEND}/exec`, {
     method: 'PUT',
     headers: {'Content-Type': 'application/json'},
     body:  JSON.stringify(data)
@@ -46,7 +46,7 @@ export const rstrExec = (data, cb) => fetch(`${RS_BACKEND}/restream/exec`, {
     .catch(ex => console.log("Put Data error:", ex));
 
 export const getStatus = (cb) => {
-    fetch(`${RS_BACKEND}/restream/status`)
+    fetch(`${RS_BACKEND}/status`)
         .then((response) => {
             if (response.ok) {
                 return response.json().then(data => cb(data));

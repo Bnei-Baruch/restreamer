@@ -8,21 +8,23 @@ class Restreamer extends Component {
     state = {
         name: "",
         language: "heb",
-        restream: {}
+        url: "",
+        db: {}
     };
 
     componentDidMount() {
-        getData(`restream`, (restream) => {
-            console.log(":: Got restream: ",restream);
-            this.setState({restream});
+        getData(db => {
+            console.log(":: Got restream: ",db);
+            this.setState({db});
         });
     };
 
     addRestream = (del) => {
-        let {restream} = this.state;
-        putData(`restream`, restream, (data) => {
-            console.log(" :: Save presets callback: ", data);
-            this.setState({restream});
+        let {db,name,language,url} = this.state;
+        db.restream.push({name,language,url});
+        putData(db, (data) => {
+            console.log(" :: Save restream callback: ", data);
+            this.setState({db});
         });
     };
 
@@ -38,14 +40,14 @@ class Restreamer extends Component {
 
         return(
             <Segment padded textAlign='center' color='brown'>
-                <Label  size='big' >
+                <Label size='big' >
                     <Input type='text' placeholder='Type name...'
                            value={name} action
                            onChange={e => this.setState({name: e.target.value})}>
                         <input />
-                        <Select compact options={options} value={language}
+                        <Select compact options={options} value={language} size='big'
                                 onChange={(e, {value}) => this.setState({language: value})} />
-                        <Button type='submit' color='green' onClick={this.addRestream}>Add</Button>
+                        <Button size='big' color='green' onClick={this.addRestream}>Add</Button>
                     </Input>
                 </Label>
                 <Divider />
