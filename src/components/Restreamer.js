@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import { Divider, Segment, Label, Input, Button, Select } from 'semantic-ui-react'
 import {getData, putData} from "../shared/tools";
-
+import Streams from "./Streams";
 
 class Restreamer extends Component {
 
@@ -9,7 +9,9 @@ class Restreamer extends Component {
         name: "",
         language: "heb",
         url: "",
-        db: {}
+        db: {
+            restream: []
+        }
     };
 
     componentDidMount() {
@@ -22,6 +24,10 @@ class Restreamer extends Component {
     addRestream = (del) => {
         let {db,name,language,url} = this.state;
         db.restream.push({name,language,url});
+        this.saveData(db);
+    };
+
+    saveData = (db) => {
         putData(db, (data) => {
             console.log(" :: Save restream callback: ", data);
             this.setState({db});
@@ -30,13 +36,17 @@ class Restreamer extends Component {
 
     render() {
 
-        const {name,language} = this.state;
+        const {db,name,language} = this.state;
 
         const options = [
             { key: 'heb', text: 'Hebrew', value: 'heb' },
             { key: 'rus', text: 'Russian', value: 'rus' },
             { key: 'eng', text: 'English', value: 'eng' },
-        ]
+        ];
+
+        let streams = db.restream.map((stream,i) => {
+            return (<Streams key={i} index={i} db={db} saveData={this.saveData} />);
+        });
 
         return(
             <Segment padded textAlign='center' color='brown'>
@@ -51,7 +61,7 @@ class Restreamer extends Component {
                     </Input>
                 </Label>
                 <Divider />
-
+                {streams}
             </Segment>
         );
     }
