@@ -42,6 +42,7 @@ class Restreamer extends Component {
             { key: 'heb', text: 'Hebrew', value: 'heb' },
             { key: 'rus', text: 'Russian', value: 'rus' },
             { key: 'eng', text: 'English', value: 'eng' },
+            { key: 'spa', text: 'Spanish', value: 'spa' },
         ];
 
         let streams = db.restream.map((stream,i) => {
@@ -51,12 +52,12 @@ class Restreamer extends Component {
         return(
             <Segment padded textAlign='center' color='brown'>
                 <Label size='big' >
+                    <Select compact options={options} value={language} size='big'
+                            onChange={(e, {value}) => this.setState({language: value})} />
                     <Input type='text' placeholder='Type name...'
                            value={name} action
                            onChange={e => this.setState({name: e.target.value})}>
                         <input />
-                        <Select compact options={options} value={language} size='big'
-                                onChange={(e, {value}) => this.setState({language: value})} />
                         <Button size='big' color='green' onClick={this.addRestream}>Add</Button>
                     </Input>
                 </Label>

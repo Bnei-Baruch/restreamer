@@ -1,4 +1,3 @@
-export const IVAL = 1000;
 export const RS_STATE = process.env.REACT_APP_RS_STATE;
 export const RS_BACKEND = process.env.REACT_APP_RS_BACKEND;
 
@@ -45,12 +44,12 @@ export const rstrExec = (data, cb) => fetch(`${RS_BACKEND}/exec`, {
     })
     .catch(ex => console.log("Put Data error:", ex));
 
-export const getStatus = (cb) => {
-    fetch(`${RS_BACKEND}/status`)
+export const getStatus = (id,cb) => {
+    fetch(`${RS_BACKEND}/status?id=${id}`)
         .then((response) => {
             if (response.ok) {
                 return response.json().then(data => cb(data));
             }
         })
-        .catch(ex => console.log(`getUpload`, ex));
+        .catch(ex => console.log(`getStatus`, ex));
 };
