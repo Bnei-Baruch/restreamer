@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import { Message, Menu, Checkbox, Icon, Label, Popup, Button, Modal, Header, Input } from 'semantic-ui-react'
-import {getStatus} from "../shared/tools";
+import {getStatus, rstrExec} from "../shared/tools";
 
 class Streams extends Component {
 
@@ -8,13 +8,41 @@ class Streams extends Component {
         ival: null,
         url: "",
         online: false,
-        open: false
+        open: false,
+        status: {
+            status: "Off",
+            time: "00:00:00",
+            progress: "end"
+        }
     };
 
     componentDidMount() {
         let {index} = this.props;
-        let ival = setInterval(() => getStatus(index , status => {
+        getStatus(index , data => {
+            let status = {
+                status: data.jsonst.status,
+                time: data.jsonst.out_time.split(".")[0],
+                progress: data.jsonst.progress
+            };
             console.log(status);
+            let online = data.jsonst.status === "On";
+            if(online) this.runTimer();
+            this.setState({status,online});
+        })
+    };
+
+    componentWillUnmount() {
+        clearInterval(this.state.ival);
+    };
+
+    runTimer = () => {
+        let {index} = this.props;
+        let ival = setInterval(() => getStatus(index , data => {
+            let status = {
+                status: data.jsonst.status,
+                time: data.jsonst.out_time.split(".")[0],
+                progress: data.jsonst.progress
+            };
             this.setState({status});
         }), 1000 );
         this.setState({ival});
@@ -31,7 +59,29 @@ class Streams extends Component {
     toggleStream = () => {
         let {index} = this.props;
         console.log(" :: Toggle stream: " + index);
-        this.setState({online: !this.state.online});
+        let online = !this.state.online;
+        this.setState({online});
+        if(online) this.startStream();
+        if(!online) this.stopStream();
+    };
+
+    startStream = () => {
+        let {index,db} = this.props;
+        let stream = db.restream[index];
+        let req = {"id":index, "req":"start", stream};
+        rstrExec(req,  (data) => {
+            console.log(":: Stream Stated :: ",data);
+            this.runTimer();
+        });
+    };
+
+    stopStream = () => {
+        let {index} = this.props;
+        let req = {"id":index, "req":"stop"};
+        rstrExec(req,  (data) => {
+            console.log(":: Stream Stopped :: ",data);
+            clearInterval(this.state.ival);
+        });
     };
 
     addUrl = () => {
@@ -41,31 +91,31 @@ class Streams extends Component {
         this.setState({ open: false });
     };
 
-    open = () => this.setState({ open: true })
-    close = () => this.setState({ open: false })
+    open = () => this.setState({ open: true });
+    close = () => this.setState({ open: false });
 
     render() {
 
         const {index} = this.props;
         const {name,language,url} = this.props.db.restream[index];
-        const {online} = this.state;
+        const {online,status} = this.state;
 
         return (
             <Message className='stream'>
                 <Menu secondary>
                     <Menu.Item>
-                        <Label size='big' color='red'>
-                            00:00:00
-                        </Label>
-                    </Menu.Item>
-                    <Menu.Item>
-                        <Checkbox toggle
+                        <Checkbox toggle disabled={url === ""}
                                   checked={online}
                                   onChange={this.toggleStream} />
                     </Menu.Item>
                     <Menu.Item>
+                        <Label size='big' color={status.status === "On" ? 'green' : 'red'}>
+                            {status.time}
+                        </Label>
+                    </Menu.Item>
+                    <Menu.Item>
                         <Label size='big' color='grey'>
-                            {language}
+                            {language.toLocaleUpperCase()}
                         </Label>
                     </Menu.Item>
                     <Menu.Item>
