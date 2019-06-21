@@ -49,6 +49,8 @@ export const getStatus = (id,cb) => {
         .then((response) => {
             if (response.ok) {
                 return response.json().then(data => cb(data));
+            } else {
+                cb(null)
             }
         })
         .catch(ex => console.log(`getStatus`, ex));

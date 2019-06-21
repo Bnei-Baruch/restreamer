@@ -19,15 +19,18 @@ class Streams extends Component {
     componentDidMount() {
         let {index} = this.props;
         getStatus(index , data => {
-            let status = {
-                status: data.jsonst.status,
-                time: data.jsonst.out_time.split(".")[0],
-                progress: data.jsonst.progress
-            };
-            console.log(status);
-            let online = data.jsonst.status === "On";
-            if(online) this.runTimer();
-            this.setState({status,online});
+            if(data) {
+                let status = {
+                    status: data.jsonst.status || "On",
+                    time: data.jsonst.out_time.split(".")[0],
+                    progress: data.jsonst.progress
+                };
+                console.log(status);
+                let online = data.jsonst.status === "On";
+                if(online) this.runTimer();
+                this.setState({status,online});
+            }
+
         })
     };
 
@@ -58,9 +61,9 @@ class Streams extends Component {
 
     toggleStream = () => {
         let {index} = this.props;
-        console.log(" :: Toggle stream: " + index);
         let online = !this.state.online;
         this.setState({online});
+        console.log(" :: Toggle stream: " + index,online);
         if(online) this.startStream();
         if(!online) this.stopStream();
     };
@@ -68,11 +71,13 @@ class Streams extends Component {
     startStream = () => {
         let {index,db} = this.props;
         let stream = db.restream[index];
+        console.log(stream)
         let req = {"id":index, "req":"start", stream};
         rstrExec(req,  (data) => {
             console.log(":: Stream Stated :: ",data);
-            this.runTimer();
+            //this.runTimer();
         });
+        this.runTimer();
     };
 
     stopStream = () => {
@@ -81,6 +86,7 @@ class Streams extends Component {
         rstrExec(req,  (data) => {
             console.log(":: Stream Stopped :: ",data);
             clearInterval(this.state.ival);
+            this.setState({online: false})
         });
     };
 
@@ -109,7 +115,7 @@ class Streams extends Component {
                                   onChange={this.toggleStream} />
                     </Menu.Item>
                     <Menu.Item>
-                        <Label size='big' color={status.status === "On" ? 'green' : 'red'}>
+                        <Label size='big' color={online ? 'green' : 'red'}>
                             {status.time}
                         </Label>
                     </Menu.Item>
