@@ -43,6 +43,9 @@ class Restreamer extends Component {
             { key: 'rus', text: 'Russian', value: 'rus' },
             { key: 'eng', text: 'English', value: 'eng' },
             { key: 'spa', text: 'Spanish', value: 'spa' },
+            { key: 'fre', text: 'French', value: 'fre' },
+            { key: 'ita', text: 'Italian', value: 'ita' },
+            { key: 'ger', text: 'German', value: 'ger' },
         ];
 
         let streams = db.restream.map((stream,i) => {
