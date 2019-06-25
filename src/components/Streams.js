@@ -5,6 +5,7 @@ import {getStatus, rstrExec} from "../shared/tools";
 class Streams extends Component {
 
     state = {
+        delay: false,
         ival: null,
         url: "",
         online: false,
@@ -20,9 +21,10 @@ class Streams extends Component {
         let {index} = this.props;
         getStatus(index , data => {
             if(data) {
+                let timer = data.jsonst.out_time ? data.jsonst.out_time.split(".")[0] : "00:00:00";
                 let status = {
                     status: data.jsonst.status || "On",
-                    time: data.jsonst.out_time.split(".")[0],
+                    time: timer,
                     progress: data.jsonst.progress
                 };
                 console.log(status);
@@ -41,9 +43,10 @@ class Streams extends Component {
     runTimer = () => {
         let {index} = this.props;
         let ival = setInterval(() => getStatus(index , data => {
+            let timer = data.jsonst.out_time ? data.jsonst.out_time.split(".")[0] : "00:00:00";
             let status = {
                 status: data.jsonst.status,
-                time: data.jsonst.out_time.split(".")[0],
+                time: timer,
                 progress: data.jsonst.progress
             };
             this.setState({status});
@@ -78,6 +81,7 @@ class Streams extends Component {
             //this.runTimer();
         });
         this.runTimer();
+        this.setDelay();
     };
 
     stopStream = () => {
@@ -100,17 +104,24 @@ class Streams extends Component {
     open = () => this.setState({ open: true });
     close = () => this.setState({ open: false });
 
+    setDelay = () => {
+        this.setState({delay: true});
+        setTimeout(() => {
+            this.setState({delay: false});
+        }, 2000);
+    };
+
     render() {
 
         const {index} = this.props;
         const {name,language,url} = this.props.db.restream[index];
-        const {online,status} = this.state;
+        const {online,status,delay} = this.state;
 
         return (
             <Message className='stream'>
                 <Menu secondary>
                     <Menu.Item>
-                        <Checkbox toggle disabled={url === ""}
+                        <Checkbox toggle disabled={delay || url === ""}
                                   checked={online}
                                   onChange={this.toggleStream} />
                     </Menu.Item>
