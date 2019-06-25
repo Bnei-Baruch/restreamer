@@ -92,6 +92,7 @@ class Streams extends Component {
             clearInterval(this.state.ival);
             this.setState({online: false})
         });
+        this.setDelay();
     };
 
     addUrl = () => {
